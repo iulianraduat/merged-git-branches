@@ -1,0 +1,134 @@
+{
+  "name": "merged-git-branches",
+  "displayName": "Displays in which branches is merged a git branch",
+  "description": "A Visual Studio Code extension for displaying all branches in which is merged a git branch.",
+  "version": "1.0.0",
+  "icon": "images/logo.png",
+  "license": "GPL-3.0",
+  "publisher": "iulian-radu-at",
+  "homepage": "https://marketplace.visualstudio.com/items?itemName=iulian-radu-at.merged-git-branches",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/iulian-radu-at/merged-git-branches"
+  },
+  "engines": {
+    "vscode": "^1.59.0"
+  },
+  "bugs": {
+    "url": "https://github.com/iulian-radu-at/merged-git-branches/issues"
+  },
+  "main": "./out/main.js",
+  "scripts": {
+    "vscode:prepublish": "npm run -S esbuild-base -- --minify",
+    "esbuild-base": "rimraf out && esbuild ./src/extension.ts --bundle --outfile=out/main.js --external:vscode --format=cjs --platform=node",
+    "esbuild": "npm run -S esbuild-base -- --sourcemap",
+    "package": "vsce package",
+    "install:local": "code --install-extension merged-git-branches-1.0.0.vsix",
+    "publish": "vsce publish",
+    "esbuild-watch": "npm run -S esbuild-base -- --sourcemap --watch",
+    "test-compile": "rimraf out && tsc -p ./",
+    "watch": "tsc -watch -p ./",
+    "lint": "eslint src --ext ts",
+    "pretest": "yarn run compile && yarn run lint",
+    "test": "echo node ./out/test/runTest.js"
+  },
+  "devDependencies": {
+    "@types/node": "16.11.10",
+    "@types/vscode": "1.59.0",
+    "@typescript-eslint/eslint-plugin": "5.13.0",
+    "@typescript-eslint/parser": "5.13.0",
+    "esbuild": "0.14.24",
+    "eslint": "8.10.0",
+    "rimraf": "3.0.2",
+    "typescript": "4.6.2",
+    "vscode-test": "1.6.1"
+  },
+  "categories": [
+    "Other"
+  ],
+  "activationEvents": [
+    "onView:mergedGitBranches",
+    "onCommand:mergedGitBranches.refresh"
+  ],
+  "contributes": {
+    "viewsContainers": {
+      "activitybar": [
+        {
+          "id": "mergedGitBranches",
+          "title": "Merged Git Branches",
+          "icon": "resources/merged-git-branches.svg"
+        }
+      ]
+    },
+    "views": {
+      "mergedGitBranches": [
+        {
+          "id": "mergedGitBranches",
+          "name": "Merged Git Branches"
+        }
+      ]
+    },
+    "commands": [
+      {
+        "command": "mergedGitBranches.refresh",
+        "title": "Refresh list of branches",
+        "icon": "$(refresh)"
+      },
+      {
+        "command": "mergedGitBranches.delete",
+        "title": "Delete remote branch",
+        "icon": "$(trash)"
+      },
+      {
+        "command": "mergedGitBranches.prune",
+        "title": "Remove tracking branches no longer on remote",
+        "icon": "$(clear-all)"
+      }
+    ],
+    "menus": {
+      "view/title": [
+        {
+          "command": "mergedGitBranches.refresh",
+          "when": "view == mergedGitBranches",
+          "group": "inline@2"
+        },
+        {
+          "command": "mergedGitBranches.prune",
+          "when": "view == mergedGitBranches",
+          "group": "inline@1"
+        }
+      ],
+      "view/item/context": [
+        {
+          "command": "mergedGitBranches.delete",
+          "when": "view == mergedGitBranches && viewItem == mergedBranch",
+          "group": "inline"
+        }
+      ]
+    },
+    "configuration": [
+      {
+        "title": "Merged Git Branches",
+        "properties": {
+          "mergedGitBranches.debug": {
+            "type": "boolean",
+            "default": false,
+            "description": "Merged Git Branches: log all errors in an output window",
+            "scope": "resource"
+          },
+          "mergedGitBranches.defaultResultExpanded": {
+            "type": "boolean",
+            "default": false,
+            "description": "Merged Git Branches: show all found results initially expanded (otherwise collapsed)",
+            "scope": "resource"
+          }
+        }
+      }
+    ]
+  },
+  "findUnusedExports": {
+    "exclude": [
+      "./src/**/*.stories.@(js|jsx|ts|tsx)"
+    ]
+  }
+}
