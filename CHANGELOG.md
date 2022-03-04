@@ -15,3 +15,17 @@ All notable changes to the "Merged Git Branches" extension will be documented in
 ### Removed
 
 - Nothing
+
+## 1.0.1 (2022-03-04)
+
+### Added
+
+- The possibility to copy the name of the branch
+
+### Changed
+
+- Nothing
+
+### Removed
+
+- Nothing

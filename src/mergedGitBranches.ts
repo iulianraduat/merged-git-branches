@@ -41,15 +41,6 @@ export class mergedGitBranchesProvider
     this._onDidChangeTreeData.fire(undefined);
   }
 
-  public delete(node: TreeNode): any {
-    const terminal = vscode.window.createTerminal(
-      `Delete remote branch ${node.parent?.label}/${node.label}`
-    );
-    terminal.show();
-    const cmd = `git push ${node.parent?.label} -D ${node.label}`;
-    terminal.sendText(cmd, false);
-  }
-
   public prune() {
     if (this.cacheRepos === undefined) {
       return;
@@ -63,6 +54,27 @@ export class mergedGitBranchesProvider
         )
       )
     );
+  }
+
+  public copyName(node: TreeNode): any {
+    const remote = getRemoteName(node.parent);
+    const name = `${remote}/${node.label}`;
+    vscode.env.clipboard
+      .writeText(name)
+      .then(() =>
+        vscode.window.showInformationMessage(
+          `Branch's name was copied in clipboard: ${name}`
+        )
+      );
+  }
+
+  public delete(node: TreeNode): any {
+    const terminal = vscode.window.createTerminal(
+      `Delete remote branch ${node.parent?.label}/${node.label}`
+    );
+    terminal.show();
+    const cmd = `git push ${node.parent?.label} -D ${node.label}`;
+    terminal.sendText(cmd, false);
   }
 
   private async isGitCommandPresent(): Promise<boolean> {
@@ -218,6 +230,15 @@ function getRemoteForBranch(remotes: Remote[], branch: string) {
 function getTreeNode(cacheRemotes: TreeNode[], remote: Remote) {
   /* in tooltip we have the remote url */
   return cacheRemotes.find((node) => node.tooltip === remote.url);
+}
+
+function getRemoteName(node?: TreeNode) {
+  for (; node !== undefined; node = node?.parent) {
+    if (node.parent === undefined) {
+      return node.label;
+    }
+  }
+  return undefined;
 }
 
 const NoGitExecutable: TreeNode = new TreeNode(

@@ -2,7 +2,7 @@
   "name": "merged-git-branches",
   "displayName": "Displays in which branches is merged a git branch",
   "description": "A Visual Studio Code extension for displaying all branches in which is merged a git branch.",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "icon": "images/logo.png",
   "license": "GPL-3.0",
   "publisher": "iulian-radu-at",
@@ -23,7 +23,7 @@
     "esbuild-base": "rimraf out && esbuild ./src/extension.ts --bundle --outfile=out/main.js --external:vscode --format=cjs --platform=node",
     "esbuild": "npm run -S esbuild-base -- --sourcemap",
     "package": "vsce package",
-    "install:local": "code --install-extension merged-git-branches-1.0.0.vsix",
+    "install:local": "code --install-extension merged-git-branches-1.0.1.vsix",
     "publish": "vsce publish",
     "esbuild-watch": "npm run -S esbuild-base -- --sourcemap --watch",
     "test-compile": "rimraf out && tsc -p ./",
@@ -70,19 +70,24 @@
     },
     "commands": [
       {
+        "command": "mergedGitBranches.prune",
+        "title": "Remove tracking branches no longer on remote",
+        "icon": "$(clear-all)"
+      },
+      {
         "command": "mergedGitBranches.refresh",
         "title": "Refresh list of branches",
         "icon": "$(refresh)"
       },
       {
+        "command": "mergedGitBranches.copyName",
+        "title": "Copy branch's name",
+        "icon": "$(chrome-restore)"
+      },
+      {
         "command": "mergedGitBranches.delete",
         "title": "Delete remote branch",
         "icon": "$(trash)"
-      },
-      {
-        "command": "mergedGitBranches.prune",
-        "title": "Remove tracking branches no longer on remote",
-        "icon": "$(clear-all)"
       }
     ],
     "menus": {
@@ -102,6 +107,16 @@
         {
           "command": "mergedGitBranches.delete",
           "when": "view == mergedGitBranches && viewItem == mergedBranch",
+          "group": "inline@1"
+        },
+        {
+          "command": "mergedGitBranches.copyName",
+          "when": "view == mergedGitBranches && viewItem == mergedBranch",
+          "group": "inline@2"
+        },
+        {
+          "command": "mergedGitBranches.copyName",
+          "when": "view == mergedGitBranches && viewItem == mergedInBranch",
           "group": "inline"
         }
       ]

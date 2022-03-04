@@ -11,6 +11,7 @@ Automatically find all remote Git branches and displays in which other branches 
 
 - Automatically find all remote Git branches and displays in which other branches are they merged
 - For merged branches, a command to remove the remote Git branch can be displayed inside of a Visual Studio Code terminals
+- The possibility to copy the branch's name
 
 ## Usage
 

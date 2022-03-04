@@ -18,6 +18,12 @@ export const activate = (context: vscode.ExtensionContext) => {
   vscode.window.registerTreeDataProvider('mergedGitBranches', branchesProvider);
 
   let disposable: vscode.Disposable;
+
+  disposable = vscode.commands.registerCommand('mergedGitBranches.prune', () =>
+    branchesProvider.prune()
+  );
+  context.subscriptions.push(disposable);
+
   disposable = vscode.commands.registerCommand(
     'mergedGitBranches.refresh',
     () => branchesProvider.refresh()
@@ -25,13 +31,14 @@ export const activate = (context: vscode.ExtensionContext) => {
   context.subscriptions.push(disposable);
 
   disposable = vscode.commands.registerCommand(
-    'mergedGitBranches.delete',
-    (branch: TreeNode) => branchesProvider.delete(branch)
+    'mergedGitBranches.copyName',
+    (branch: TreeNode) => branchesProvider.copyName(branch)
   );
   context.subscriptions.push(disposable);
 
-  disposable = vscode.commands.registerCommand('mergedGitBranches.prune', () =>
-    branchesProvider.prune()
+  disposable = vscode.commands.registerCommand(
+    'mergedGitBranches.delete',
+    (branch: TreeNode) => branchesProvider.delete(branch)
   );
   context.subscriptions.push(disposable);
 };
