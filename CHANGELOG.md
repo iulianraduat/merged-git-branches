@@ -29,3 +29,17 @@ All notable changes to the "Merged Git Branches" extension will be documented in
 ### Removed
 
 - Nothing
+
+## 1.0.2 (2022-06-22)
+
+### Added
+
+- Support link for extension's author (https://www.patreon.com/iulian_radu_at)
+
+### Changed
+
+- Updated packages
+
+### Removed
+
+- Nothing
