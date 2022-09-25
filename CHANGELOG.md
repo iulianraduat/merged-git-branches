@@ -43,3 +43,17 @@ All notable changes to the "Merged Git Branches" extension will be documented in
 ### Removed
 
 - Nothing
+
+## 1.0.3 (2022-09-25)
+
+### Added
+
+- Nothing
+
+### Changed
+
+- Updated packages
+
+### Removed
+
+- Nothing
