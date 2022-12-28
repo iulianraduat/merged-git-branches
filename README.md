@@ -2,7 +2,7 @@
 
 [![Marketplace Version](https://vsmarketplacebadges.dev/version/iulian-radu-at.merged-git-branches.svg)](https://marketplace.visualstudio.com/items?itemName=iulian-radu-at.merged-git-branches)
 [![Installs](https://vsmarketplacebadges.dev/installs/iulian-radu-at.merged-git-branches.svg)](https://marketplace.visualstudio.com/items?itemName=iulian-radu-at.merged-git-branches)
-[![Rating](https://vsmarketplacebadges.dev/rating/iulian-radu-at.merged-git-branches.svg)](https://marketplace.visualstudio.com/items?itemName=iulian-radu-at.merged-git-branches)
+[![Rating](https://vsmarketplacebadges.dev/rating-short/iulian-radu-at.merged-git-branches.svg)](https://marketplace.visualstudio.com/items?itemName=iulian-radu-at.merged-git-branches)
 <a href="http://opensource.org/licenses/GPL-3.0" target="_blank" rel="noreferrer noopener"><img src="https://img.shields.io/badge/license-GPL-orange.svg?color=blue&amp;style=flat-square" alt="The GPL-3.0 License"></a>
 
 Automatically find all remote Git branches and displays in which other branches are they merged.
