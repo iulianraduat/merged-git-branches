@@ -57,3 +57,18 @@ All notable changes to the "Merged Git Branches" extension will be documented in
 ### Removed
 
 - Nothing
+
+## 1.0.4 (2023-06-10)
+
+### Added
+
+- Nothing
+
+### Changed
+
+- Updated packages
+- Fixed the badges
+
+### Removed
+
+- Nothing
