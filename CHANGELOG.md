@@ -72,3 +72,19 @@ All notable changes to the "Merged Git Branches" extension will be documented in
 ### Removed
 
 - Nothing
+
+## 1.1.0 (2023-09-22)
+
+### Added
+
+- Sort by name (asc) or date (desc) of branches
+- Can copy repo's address from view
+- Display in output the result of the prun command
+
+### Changed
+
+- Can copy any branch name
+
+### Removed
+
+- Nothing
