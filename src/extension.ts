@@ -42,7 +42,7 @@ export const activate = (context: vscode.ExtensionContext) => {
   context.subscriptions.push(
     vscode.commands.registerCommand('mergedGitBranches.sortByDate', () => {
       setIsSortedByDateContext(true);
-      branchesProvider.viewAsSortedByDate();
+      branchesProvider.sortByDate();
     })
   );
 

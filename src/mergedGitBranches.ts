@@ -29,6 +29,7 @@ export class mergedGitBranchesProvider
     if (!(await this.isGitCommandPresent()) || !this.workspaceFolders) {
       this.cacheReposSortByName = [NoGitExecutable];
       this.cacheReposSortByDate = [NoGitExecutable];
+      this._onDidChangeTreeData.fire(undefined);
       return;
     }
 
@@ -56,13 +57,18 @@ export class mergedGitBranchesProvider
     this._onDidChangeTreeData.fire(undefined);
   }
 
+  /**
+   * by name ascending
+   * by date descending
+   */
   private sortRepo(node: TreeNode, sortByDate: boolean): TreeNode {
-    node.children.sort((a, b) =>
+    const newNode = node.clone();
+    newNode.children.sort((a, b) =>
       sortByDate
-        ? this.getTooltip(a).localeCompare(this.getTooltip(b))
+        ? this.getTooltip(b).localeCompare(this.getTooltip(a))
         : a.label.localeCompare(b.label)
     );
-    return node;
+    return newNode;
   }
 
   private getTooltip(node: TreeNode): string {
@@ -134,7 +140,7 @@ export class mergedGitBranchesProvider
     }
   }
 
-  public viewAsSortedByDate() {
+  public sortByDate() {
     this.isSortedByDate = true;
     this._onDidChangeTreeData.fire(undefined);
   }

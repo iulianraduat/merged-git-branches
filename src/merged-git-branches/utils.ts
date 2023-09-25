@@ -1,6 +1,6 @@
 import * as childProcess from 'child_process';
 import * as vscode from 'vscode';
-import { Remote } from '../treeNode';
+import { Remote, TreeNode } from '../treeNode';
 
 const reEOL = /\r?\n/g;
 export function execute(command: string, cwd?: string): Promise<string[]> {

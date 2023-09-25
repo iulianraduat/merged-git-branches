@@ -29,6 +29,20 @@ export class TreeNode extends vscode.TreeItem {
     this.contextValue = this.getContextValue();
   }
 
+  public clone(): TreeNode {
+    const newNode = new TreeNode(
+      this.parent,
+      this.id + Math.random(),
+      this.type,
+      this.label,
+      this.description,
+      this.collapsibleState,
+      this.command
+    );
+    newNode.children = this.children.map((child) => child.clone());
+    return newNode;
+  }
+
   public update() {
     if (this.type === DEPENDENCY_TYPE.BRANCH && this.children.length > 0) {
       this.type = DEPENDENCY_TYPE.MERGED_BRANCH;

@@ -88,3 +88,17 @@ All notable changes to the "Merged Git Branches" extension will be documented in
 ### Removed
 
 - Nothing
+
+## 1.1.1 (2023-09-25)
+
+### Added
+
+- Nothing
+
+### Changed
+
+- Fixed the sorting
+
+### Removed
+
+- Nothing
