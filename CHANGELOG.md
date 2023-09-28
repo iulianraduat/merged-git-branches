@@ -102,3 +102,18 @@ All notable changes to the "Merged Git Branches" extension will be documented in
 ### Removed
 
 - Nothing
+
+## 1.1.2 (2023-09-28)
+
+### Added
+
+- Nothing
+
+### Changed
+
+- The prune commands are opened in terminals
+- Corrected the command to remove a remote branch
+
+### Removed
+
+- Nothing

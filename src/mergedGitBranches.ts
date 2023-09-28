@@ -76,22 +76,26 @@ export class mergedGitBranchesProvider
   }
 
   public prune() {
-    if (this.cacheReposSortByName === undefined) {
+    if (
+      vscode.workspace.workspaceFolders === undefined ||
+      vscode.workspace.workspaceFolders.length === 0
+    ) {
       return;
     }
 
-    const remotes = this.cacheReposSortByName;
-    vscode.workspace.workspaceFolders?.forEach((ws) =>
-      Promise.all(
-        remotes.map((remote) =>
-          execute(`git remote prune ${remote.label}`, ws.uri.fsPath).then(
-            (output) => {
-              log(`Pruned ${remote.label}`, output.join('\n'));
-            }
-          )
-        )
-      )
-    );
+    const remotes = this.getRemotes();
+    if (remotes.length === 0) {
+      return;
+    }
+
+    remotes.forEach((remote) => {
+      const terminal = vscode.window.createTerminal(
+        `git remote prune ${remote.label}`
+      );
+      terminal.show();
+      const cmd = `git remote update --prune ${remote.label}`;
+      terminal.sendText(cmd, false);
+    });
   }
 
   public copyBranchName(node: TreeNode): void {
@@ -126,7 +130,7 @@ export class mergedGitBranchesProvider
       `Delete remote branch ${node.parent?.label}/${node.label}`
     );
     terminal.show();
-    const cmd = `git push ${node.parent?.label} -D ${node.label}`;
+    const cmd = `git branch -d -r ${node.parent?.label}/${node.label}`;
     terminal.sendText(cmd, false);
   }
 
