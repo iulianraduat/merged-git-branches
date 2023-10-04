@@ -130,7 +130,7 @@ export class mergedGitBranchesProvider
       `Delete remote branch ${node.parent?.label}/${node.label}`
     );
     terminal.show();
-    const cmd = `git push ${node.parent?.label} --delete {node.label}`;
+    const cmd = `git push ${node.parent?.label} --delete ${node.label}`;
     terminal.sendText(cmd, false);
   }
 
