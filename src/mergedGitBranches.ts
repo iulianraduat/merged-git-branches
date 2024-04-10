@@ -1,13 +1,13 @@
-import * as vscode from "vscode";
-import { log } from "./merged-git-branches/log";
+import * as vscode from 'vscode';
+import { log } from './merged-git-branches/log';
 import {
   execute,
   getTreeItemCollapsibleState,
   removeWhitespaceBeforeBranch,
   sortByRemoteNameLengthDesc,
-} from "./merged-git-branches/utils";
-import { Remote } from "./treeNode";
-import { DEPENDENCY_TYPE, TreeNode } from "./treeNode";
+} from './merged-git-branches/utils';
+import { Remote } from './treeNode';
+import { DEPENDENCY_TYPE, TreeNode } from './treeNode';
 
 export class mergedGitBranchesProvider
   implements vscode.TreeDataProvider<TreeNode>
@@ -72,7 +72,7 @@ export class mergedGitBranchesProvider
   }
 
   private getTooltip(node: TreeNode): string {
-    return node.tooltip?.toString() ?? "";
+    return node.tooltip?.toString() ?? '';
   }
 
   public prune() {
@@ -130,14 +130,14 @@ export class mergedGitBranchesProvider
       `Delete remote branch ${node.parent?.label}/${node.label}`
     );
     terminal.show();
-    const cmd = `git branch -rd ${node.parent?.label}/${node.label}`;
+    const cmd = `git push ${node.parent?.label} --delete ${node.label}`;
     terminal.sendText(cmd, false);
   }
 
   private async isGitCommandPresent(): Promise<boolean> {
     try {
       /* We check if git executable is accesible */
-      const rows = await execute("git --version");
+      const rows = await execute('git --version');
       return rows.length > 0;
     } catch (err) {
       return false;
@@ -184,7 +184,7 @@ export class mergedGitBranchesProvider
 async function addRemotesForFolder(cacheRepos: TreeNode[], folder: string) {
   try {
     /* get all remote names */
-    const remoteNames = await execute("git remote", folder);
+    const remoteNames = await execute('git remote', folder);
     const allRemotes: Remote[] = [];
     for (const name of remoteNames) {
       const url = (await execute(`git remote get-url ${name}`, folder))[0];
@@ -212,7 +212,7 @@ async function addRemotesForFolder(cacheRepos: TreeNode[], folder: string) {
     );
 
     /* get all remote branches */
-    const remoteBranches = (await execute("git branch -r", folder)).map(
+    const remoteBranches = (await execute('git branch -r', folder)).map(
       removeWhitespaceBeforeBranch
     );
 
@@ -222,12 +222,12 @@ async function addRemotesForFolder(cacheRepos: TreeNode[], folder: string) {
 
     return cacheRepos;
   } catch (err: any) {
-    log("Error:", err.message);
+    log('Error:', err.message);
     return;
   }
 }
 
-const REMOTES = "remotes/";
+const REMOTES = 'remotes/';
 const REMOTES_LEN = REMOTES.length;
 async function addRemoteBranch(
   cacheRemotes: TreeNode[],
@@ -287,7 +287,7 @@ async function addRemoteBranch(
       branchNode.update();
     }
   } catch (err: any) {
-    log("Error:", err.message);
+    log('Error:', err.message);
     return;
   }
 }
@@ -318,21 +318,21 @@ function getRemoteUrl(node?: TreeNode): string | undefined {
 
 const Refreshing: TreeNode = new TreeNode(
   undefined,
-  "-",
+  '-',
   DEPENDENCY_TYPE.REFRESH,
-  "Refreshing..."
+  'Refreshing...'
 );
 
 const NoGitExecutable: TreeNode = new TreeNode(
   undefined,
-  "-",
+  '-',
   DEPENDENCY_TYPE.GIT_EXECUTABLE_MISSING,
-  "The command git was not found."
+  'The command git was not found.'
 );
 
 const NoBranchesFound: TreeNode = new TreeNode(
   undefined,
-  "-",
+  '-',
   DEPENDENCY_TYPE.EMPTY,
-  "No branches were found"
+  'No branches were found'
 );

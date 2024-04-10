@@ -159,3 +159,18 @@ All notable changes to the "Merged Git Branches" extension will be documented in
 ### Removed
 
 - Nothing
+
+## 1.1.6 (2024-04-10)
+
+### Added
+
+- Nothing
+
+### Changed
+
+- Updated the links
+- Changed the git remove remote branch command
+
+### Removed
+
+- Nothing
