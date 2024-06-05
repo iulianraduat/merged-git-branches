@@ -174,3 +174,17 @@ All notable changes to the "Merged Git Branches" extension will be documented in
 ### Removed
 
 - Nothing
+
+## 1.2.0 (2024-06-05)
+
+### Added
+
+- Display of the commiter email
+
+### Changed
+
+- Removed the TimeZone offset
+
+### Removed
+
+- Nothing

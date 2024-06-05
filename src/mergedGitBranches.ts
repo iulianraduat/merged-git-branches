@@ -252,14 +252,18 @@ async function addRemoteBranch(
   try {
     /* get the branch hash */
     const hash = (await execute(`git rev-parse ${branch}`, folder))[0];
-    const date = (await execute(`git show -s --format=%ci ${hash}`, folder))[0];
+    const dateAndEmailFields = (
+      await execute(`git show -s --format="%ci %ce" ${hash}`, folder)
+    )[0];
+    const fields = dateAndEmailFields.split(' ');
+    const dateAndEmail = `${fields[0]} ${fields[1]} ${fields[3]}`;
 
     const branchNode = new TreeNode(
       node,
       `${node.id} ${branch} 2 ${Math.random()}`,
       DEPENDENCY_TYPE.BRANCH,
       branch.substring(remote.name.length + 1),
-      date
+      dateAndEmail
     );
     node.children.push(branchNode);
 
