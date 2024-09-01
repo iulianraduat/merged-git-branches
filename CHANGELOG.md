@@ -202,3 +202,17 @@ All notable changes to the "Merged Git Branches" extension will be documented in
 ### Removed
 
 - Nothing
+
+## 1.2.1 (2024-09-01)
+
+### Added
+
+- Nothing
+
+### Changed
+
+- Updated the packages
+
+### Removed
+
+- Nothing
