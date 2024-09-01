@@ -7,6 +7,7 @@ export enum DEPENDENCY_TYPE {
   BRANCH,
   MERGED_BRANCH,
   MERGED_IN_BRANCH,
+  REFRESH,
 }
 
 export class TreeNode extends vscode.TreeItem {
@@ -23,9 +24,23 @@ export class TreeNode extends vscode.TreeItem {
   ) {
     super(label, collapsibleState);
 
-    this.iconPath = new vscode.ThemeIcon(this.getIconPath());
+    this.iconPath = new vscode.ThemeIcon(this.getIconName());
     this.tooltip = this.getTooltip();
     this.contextValue = this.getContextValue();
+  }
+
+  public clone(): TreeNode {
+    const newNode = new TreeNode(
+      this.parent,
+      this.id + Math.random(),
+      this.type,
+      this.label,
+      this.description,
+      this.collapsibleState,
+      this.command
+    );
+    newNode.children = this.children.map((child) => child.clone());
+    return newNode;
   }
 
   public update() {
@@ -35,7 +50,7 @@ export class TreeNode extends vscode.TreeItem {
     }
   }
 
-  private getIconPath() {
+  private getIconName() {
     switch (this.type) {
       case DEPENDENCY_TYPE.GIT_EXECUTABLE_MISSING:
         return 'alert';
@@ -49,6 +64,8 @@ export class TreeNode extends vscode.TreeItem {
         return 'git-branch';
       case DEPENDENCY_TYPE.MERGED_IN_BRANCH:
         return 'git-merge';
+      case DEPENDENCY_TYPE.REFRESH:
+        return 'refresh';
     }
   }
 
@@ -58,10 +75,6 @@ export class TreeNode extends vscode.TreeItem {
 
   private getContextValue(): string | undefined {
     switch (this.type) {
-      case DEPENDENCY_TYPE.GIT_EXECUTABLE_MISSING:
-        return undefined;
-      case DEPENDENCY_TYPE.EMPTY:
-        return undefined;
       case DEPENDENCY_TYPE.REMOTE:
         return 'remote';
       case DEPENDENCY_TYPE.BRANCH:
@@ -70,6 +83,8 @@ export class TreeNode extends vscode.TreeItem {
         return 'mergedBranch';
       case DEPENDENCY_TYPE.MERGED_IN_BRANCH:
         return 'mergedInBranch';
+      default:
+        return undefined;
     }
   }
 }

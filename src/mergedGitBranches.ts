@@ -12,7 +12,9 @@ import { DEPENDENCY_TYPE, TreeNode } from './treeNode';
 export class mergedGitBranchesProvider
   implements vscode.TreeDataProvider<TreeNode>
 {
-  private cacheRepos: TreeNode[] | undefined;
+  private isSortedByDate: boolean = false;
+  private cacheReposSortByName: TreeNode[] | undefined;
+  private cacheReposSortByDate: TreeNode[] | undefined;
 
   private _onDidChangeTreeData: vscode.EventEmitter<TreeNode | undefined> =
     new vscode.EventEmitter<TreeNode | undefined>();
@@ -25,38 +27,78 @@ export class mergedGitBranchesProvider
 
   public async refresh() {
     if (!(await this.isGitCommandPresent()) || !this.workspaceFolders) {
-      this.cacheRepos = [NoGitExecutable];
+      this.cacheReposSortByName = [NoGitExecutable];
+      this.cacheReposSortByDate = [NoGitExecutable];
+      this._onDidChangeTreeData.fire(undefined);
       return;
     }
 
-    this.cacheRepos = [];
+    this.cacheReposSortByName = [Refreshing];
+    this.cacheReposSortByDate = [Refreshing];
+    this._onDidChangeTreeData.fire(undefined);
+
+    const cacheRepos: Array<TreeNode> = [];
     for (const workspaceFolder of this.workspaceFolders) {
-      await addRemotesForFolder(this.cacheRepos, workspaceFolder);
+      await addRemotesForFolder(cacheRepos, workspaceFolder);
     }
 
-    if (this.cacheRepos.length === 0) {
-      this.cacheRepos = [NoBranchesFound];
+    this.cacheReposSortByName = [NoBranchesFound];
+    this.cacheReposSortByDate = [NoBranchesFound];
+
+    if (cacheRepos.length > 0) {
+      this.cacheReposSortByName = cacheRepos.map((repo) =>
+        this.sortRepo(repo, false)
+      );
+      this.cacheReposSortByDate = cacheRepos.map((repo) =>
+        this.sortRepo(repo, true)
+      );
     }
 
     this._onDidChangeTreeData.fire(undefined);
   }
 
+  /**
+   * by name ascending
+   * by date descending
+   */
+  private sortRepo(node: TreeNode, sortByDate: boolean): TreeNode {
+    const newNode = node.clone();
+    newNode.children.sort((a, b) =>
+      sortByDate
+        ? this.getTooltip(b).localeCompare(this.getTooltip(a))
+        : a.label.localeCompare(b.label)
+    );
+    return newNode;
+  }
+
+  private getTooltip(node: TreeNode): string {
+    return node.tooltip?.toString() ?? '';
+  }
+
   public prune() {
-    if (this.cacheRepos === undefined) {
+    if (
+      vscode.workspace.workspaceFolders === undefined ||
+      vscode.workspace.workspaceFolders.length === 0
+    ) {
       return;
     }
 
-    const remotes = this.cacheRepos;
-    vscode.workspace.workspaceFolders?.forEach((ws) =>
-      Promise.all(
-        remotes.map((remote) =>
-          execute(`git remote prune ${remote.label}`, ws.uri.fsPath)
-        )
-      )
-    );
+    const remotes = this.getRemotes();
+    if (remotes.length === 0) {
+      return;
+    }
+
+    remotes.forEach((remote) => {
+      const terminal = vscode.window.createTerminal(
+        `git remote prune ${remote.label}`
+      );
+      terminal.show();
+      const cmd = `git remote update --prune ${remote.label}`;
+      terminal.sendText(cmd, false);
+    });
   }
 
-  public copyName(node: TreeNode): any {
+  public copyBranchName(node: TreeNode): void {
     const remote = getRemoteName(node.parent);
     const name = `${remote}/${node.label}`;
     vscode.env.clipboard
@@ -68,12 +110,27 @@ export class mergedGitBranchesProvider
       );
   }
 
+  public copyRepoAddress(node: TreeNode): void {
+    const remoteUrl = getRemoteUrl(node);
+    if (!remoteUrl) {
+      return;
+    }
+
+    vscode.env.clipboard
+      .writeText(remoteUrl)
+      .then(() =>
+        vscode.window.showInformationMessage(
+          `Repo's address was copied in clipboard: ${remoteUrl}`
+        )
+      );
+  }
+
   public delete(node: TreeNode): any {
     const terminal = vscode.window.createTerminal(
       `Delete remote branch ${node.parent?.label}/${node.label}`
     );
     terminal.show();
-    const cmd = `git push ${node.parent?.label} -D ${node.label}`;
+    const cmd = `git push ${node.parent?.label} --delete ${node.label}`;
     terminal.sendText(cmd, false);
   }
 
@@ -85,6 +142,16 @@ export class mergedGitBranchesProvider
     } catch (err) {
       return false;
     }
+  }
+
+  public sortByDate() {
+    this.isSortedByDate = true;
+    this._onDidChangeTreeData.fire(undefined);
+  }
+
+  public sortByName() {
+    this.isSortedByDate = false;
+    this._onDidChangeTreeData.fire(undefined);
   }
 
   /* TreeDataProvider specific functions */
@@ -106,7 +173,11 @@ export class mergedGitBranchesProvider
   }
 
   private getRemotes(): TreeNode[] {
-    return this.cacheRepos ?? [];
+    return (
+      (this.isSortedByDate
+        ? this.cacheReposSortByDate
+        : this.cacheReposSortByName) ?? []
+    );
   }
 }
 
@@ -181,14 +252,18 @@ async function addRemoteBranch(
   try {
     /* get the branch hash */
     const hash = (await execute(`git rev-parse ${branch}`, folder))[0];
-    const date = (await execute(`git show -s --format=%ci ${hash}`, folder))[0];
+    const dateAndEmailFields = (
+      await execute(`git show -s --format="%ci %ce" ${hash}`, folder)
+    )[0];
+    const fields = dateAndEmailFields.split(' ');
+    const dateAndEmail = `${fields[0]} ${fields[1]} ${fields[3]}`;
 
     const branchNode = new TreeNode(
       node,
       `${node.id} ${branch} 2 ${Math.random()}`,
       DEPENDENCY_TYPE.BRANCH,
       branch.substring(remote.name.length + 1),
-      date
+      dateAndEmail
     );
     node.children.push(branchNode);
 
@@ -240,6 +315,17 @@ function getRemoteName(node?: TreeNode) {
   }
   return undefined;
 }
+
+function getRemoteUrl(node?: TreeNode): string | undefined {
+  return node?.tooltip?.toString();
+}
+
+const Refreshing: TreeNode = new TreeNode(
+  undefined,
+  '-',
+  DEPENDENCY_TYPE.REFRESH,
+  'Refreshing...'
+);
 
 const NoGitExecutable: TreeNode = new TreeNode(
   undefined,

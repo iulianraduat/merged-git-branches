@@ -2,31 +2,31 @@
   "name": "merged-git-branches",
   "displayName": "Displays in which branches is merged a git branch",
   "description": "A Visual Studio Code extension for displaying all branches in which is merged a git branch.",
-  "version": "1.0.4",
+  "version": "1.2.1",
   "icon": "images/logo.png",
   "license": "GPL-3.0",
   "publisher": "iulian-radu-at",
   "homepage": "https://marketplace.visualstudio.com/items?itemName=iulian-radu-at.merged-git-branches",
   "repository": {
     "type": "git",
-    "url": "https://github.com/iulian-radu-at/merged-git-branches"
+    "url": "https://github.com/iulianraduat/merged-git-branches"
+  },
+  "bugs": {
+    "url": "https://github.com/iulianraduat/merged-git-branches/issues"
   },
   "sponsor": {
     "url": "https://www.amazon.com/dp/B0DD3DNDY1"
   },
   "engines": {
-    "vscode": "^1.59.0"
-  },
-  "bugs": {
-    "url": "https://github.com/iulian-radu-at/merged-git-branches/issues"
+    "vscode": "^1.75.0"
   },
   "main": "./out/main.js",
   "scripts": {
     "vscode:prepublish": "npm run -S esbuild-base -- --minify",
-    "esbuild-base": "rimraf out && esbuild ./src/extension.ts --bundle --outfile=out/main.js --external:vscode --format=cjs --platform=node",
+    "esbuild-base": "rimraf out && esbuild ./src/extension.ts --bundle --outfile=out/main.js --external:vscode --format=cjs --platform=node --target=es6",
     "esbuild": "npm run -S esbuild-base -- --sourcemap",
     "package": "vsce package",
-    "install:local": "code --install-extension merged-git-branches-1.0.4.vsix --profile=\"VSCode extension\"",
+    "install:local": "code --install-extension merged-git-branches-1.2.1.vsix --profile=\"VSCode extension\"",
     "publish": "vsce publish",
     "esbuild-watch": "npm run -S esbuild-base -- --sourcemap --watch",
     "test-compile": "rimraf out && tsc -p ./",
@@ -36,21 +36,18 @@
     "test": "echo node ./out/test/runTest.js"
   },
   "devDependencies": {
-    "@types/node": "16.11.68",
-    "@types/vscode": "1.59.0",
+    "@types/node": "16.18.106",
+    "@types/vscode": "1.75.1",
     "@typescript-eslint/eslint-plugin": "8.3.0",
-    "@typescript-eslint/parser": "5.38.0",
+    "@typescript-eslint/parser": "8.3.0",
     "esbuild": "0.23.1",
-    "eslint": "9.9.1",
+    "eslint": "9.4.0",
     "rimraf": "6.0.1",
-    "typescript": "5.5.4"
+    "typescript": "5.5.4",
+    "vscode-test": "1.6.1"
   },
   "categories": [
     "Other"
-  ],
-  "activationEvents": [
-    "onView:mergedGitBranches",
-    "onCommand:mergedGitBranches.refresh"
   ],
   "contributes": {
     "viewsContainers": {
@@ -77,12 +74,27 @@
         "icon": "$(clear-all)"
       },
       {
+        "command": "mergedGitBranches.sortByName",
+        "title": "Sort by name ascending",
+        "icon": "$(arrow-down)"
+      },
+      {
+        "command": "mergedGitBranches.sortByDate",
+        "title": "Sort by date descending",
+        "icon": "$(arrow-up)"
+      },
+      {
         "command": "mergedGitBranches.refresh",
         "title": "Refresh list of branches",
         "icon": "$(refresh)"
       },
       {
-        "command": "mergedGitBranches.copyName",
+        "command": "mergedGitBranches.copyRepoAddress",
+        "title": "Copy repo's address",
+        "icon": "$(chrome-restore)"
+      },
+      {
+        "command": "mergedGitBranches.copyBranchName",
         "title": "Copy branch's name",
         "icon": "$(chrome-restore)"
       },
@@ -95,14 +107,24 @@
     "menus": {
       "view/title": [
         {
-          "command": "mergedGitBranches.refresh",
-          "when": "view == mergedGitBranches",
-          "group": "inline@2"
-        },
-        {
           "command": "mergedGitBranches.prune",
           "when": "view == mergedGitBranches",
-          "group": "inline@1"
+          "group": "navigation@1"
+        },
+        {
+          "command": "mergedGitBranches.sortByName",
+          "when": "view == mergedGitBranches && isSortedByDate",
+          "group": "navigation@2"
+        },
+        {
+          "command": "mergedGitBranches.sortByDate",
+          "when": "view == mergedGitBranches && !isSortedByDate",
+          "group": "navigation@3"
+        },
+        {
+          "command": "mergedGitBranches.refresh",
+          "when": "view == mergedGitBranches",
+          "group": "navigation@4"
         }
       ],
       "view/item/context": [
@@ -112,14 +134,24 @@
           "group": "inline@1"
         },
         {
-          "command": "mergedGitBranches.copyName",
-          "when": "view == mergedGitBranches && viewItem == mergedBranch",
+          "command": "mergedGitBranches.copyBranchName",
+          "when": "view == mergedGitBranches && viewItem == branch",
           "group": "inline@2"
         },
         {
-          "command": "mergedGitBranches.copyName",
+          "command": "mergedGitBranches.copyBranchName",
+          "when": "view == mergedGitBranches && viewItem == mergedBranch",
+          "group": "inline@3"
+        },
+        {
+          "command": "mergedGitBranches.copyBranchName",
           "when": "view == mergedGitBranches && viewItem == mergedInBranch",
-          "group": "inline"
+          "group": "inline@4"
+        },
+        {
+          "command": "mergedGitBranches.copyRepoAddress",
+          "when": "view == mergedGitBranches && viewItem == remote",
+          "group": "inline@5"
         }
       ]
     },

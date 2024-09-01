@@ -9,3 +9,5 @@ vsc-extension-quickstart.md
 **/*.map
 **/*.ts
 .history/**
+images/logo.svg
+images/screenshot.png

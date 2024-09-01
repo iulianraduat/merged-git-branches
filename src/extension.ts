@@ -24,6 +24,30 @@ export const activate = (context: vscode.ExtensionContext) => {
   );
   context.subscriptions.push(disposable);
 
+  const setIsSortedByDateContext = (isSortedByDate: boolean) => {
+    vscode.commands.executeCommand(
+      'setContext',
+      'isSortedByDate',
+      isSortedByDate
+    );
+  };
+
+  context.subscriptions.push(
+    vscode.commands.registerCommand('mergedGitBranches.sortByName', () => {
+      setIsSortedByDateContext(false);
+      branchesProvider.sortByName();
+    })
+  );
+
+  context.subscriptions.push(
+    vscode.commands.registerCommand('mergedGitBranches.sortByDate', () => {
+      setIsSortedByDateContext(true);
+      branchesProvider.sortByDate();
+    })
+  );
+
+  setIsSortedByDateContext(false);
+
   disposable = vscode.commands.registerCommand(
     'mergedGitBranches.refresh',
     () => branchesProvider.refresh()
@@ -31,8 +55,14 @@ export const activate = (context: vscode.ExtensionContext) => {
   context.subscriptions.push(disposable);
 
   disposable = vscode.commands.registerCommand(
-    'mergedGitBranches.copyName',
-    (branch: TreeNode) => branchesProvider.copyName(branch)
+    'mergedGitBranches.copyBranchName',
+    (branch: TreeNode) => branchesProvider.copyBranchName(branch)
+  );
+  context.subscriptions.push(disposable);
+
+  disposable = vscode.commands.registerCommand(
+    'mergedGitBranches.copyRepoAddress',
+    (branch: TreeNode) => branchesProvider.copyRepoAddress(branch)
   );
   context.subscriptions.push(disposable);
 
