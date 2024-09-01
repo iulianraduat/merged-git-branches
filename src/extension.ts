@@ -42,3 +42,6 @@ export const activate = (context: vscode.ExtensionContext) => {
   );
   context.subscriptions.push(disposable);
 };
+
+// find-unused-exports:ignore-next-line-exports
+export function deactivate() {}

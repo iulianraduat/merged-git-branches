@@ -38,7 +38,7 @@ All notable changes to the "Merged Git Branches" extension will be documented in
 
 ### Changed
 
-- Updated packages
+- Updated the packages
 
 ### Removed
 
@@ -52,7 +52,21 @@ All notable changes to the "Merged Git Branches" extension will be documented in
 
 ### Changed
 
-- Updated packages
+- Updated the packages
+
+### Removed
+
+- Nothing
+
+## 1.0.4 (2024-09-01)
+
+### Added
+
+- Nothing
+
+### Changed
+
+- Updated the packages
 
 ### Removed
 
