@@ -1,8 +1,5 @@
 # Merged Git Branches
 
-[![Marketplace Version](https://img.shields.io/vscode-marketplace/v/iulian-radu-at.merged-git-branches)](https://marketplace.visualstudio.com/items?itemName=iulian-radu-at.merged-git-branches)
-[![Installs](https://img.shields.io/vscode-marketplace/i/iulian-radu-at.merged-git-branches)](https://marketplace.visualstudio.com/items?itemName=iulian-radu-at.merged-git-branches)
-[![Rating](https://img.shields.io/vscode-marketplace/r/iulian-radu-at.merged-git-branches)](https://marketplace.visualstudio.com/items?itemName=iulian-radu-at.merged-git-branches)
 <a href="http://opensource.org/licenses/GPL-3.0" target="_blank" rel="noreferrer noopener"><img src="https://img.shields.io/badge/license-GPL-orange.svg?color=blue&amp;style=flat-square" alt="The GPL-3.0 License"></a>
 
 Automatically find all remote Git branches and displays in which other branches are they merged.
@@ -40,12 +37,10 @@ There are no special requirements.
 ## Extension Settings
 
 - mergedGitBranches.debug:
-
   - Merged Git Branches: log all errors in an output window
   - default false
 
 - mergedGitBranches.defaultResultExpanded:
-
   - Merged Git Branches: show all found results initially expanded (otherwise collapsed)
   - default false
 

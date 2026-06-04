@@ -216,3 +216,18 @@ All notable changes to the "Merged Git Branches" extension will be documented in
 ### Removed
 
 - Nothing
+
+## 1.2.2 (2026-06-04)
+
+### Added
+
+- Nothing
+
+### Changed
+
+- Removed broken badges
+- Updated the packages
+
+### Removed
+
+- Nothing
